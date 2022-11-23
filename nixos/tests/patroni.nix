@@ -108,6 +108,7 @@ import ./make-test-python.nix ({ pkgs, lib, ... }:
           listenClientUrls = [ "http://192.168.1.4:2379" ];
         };
 
+
         networking.firewall.allowedTCPPorts = [ 2379 ];
       };
 
@@ -165,6 +166,8 @@ import ./make-test-python.nix ({ pkgs, lib, ... }:
           client.succeed("psql -h 127.0.0.1 -U postgres --pset='pager=off' --tuples-only --command='delete from dummy where val = 101;'")
 
       start_all()
+
+      etcd.wait_for_unit("etcd.service")
 
       with subtest("should bootstrap a new patroni cluster"):
           wait_for_all_nodes_ready()
